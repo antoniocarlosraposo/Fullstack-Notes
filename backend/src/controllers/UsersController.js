@@ -109,7 +109,7 @@ class UsersController {
         expiresIn: "1h",
       });
 
-      response.json({ message: "Login successful", token });
+      response.json({ message: "Login successful", token, user });
     } catch (error) {
       response
         .status(500)
