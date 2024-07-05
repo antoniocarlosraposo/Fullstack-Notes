@@ -9,12 +9,14 @@ import { Section } from "../../components/Section";
 import { ButtonText } from "../../components/ButtonText";
 import { api } from "../../services/api";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleFilterByTitle = (searchTerm) => {
     if (searchTerm === "") return setFilteredNotes(notes);
@@ -76,7 +78,11 @@ export function Home() {
       <Content>
         <Section title="My Notes">
           {filteredNotes.map((note) => (
-            <Note key={note.id} data={note} />
+            <Note
+              key={note.id}
+              data={note}
+              onClick={() => navigate(`/details/${note.id}`)}
+            />
           ))}
         </Section>
       </Content>

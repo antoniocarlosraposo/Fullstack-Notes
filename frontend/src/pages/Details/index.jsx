@@ -5,47 +5,80 @@ import { Header } from "../../components/Header";
 import { Button } from "../../components/Button";
 import { Section } from "../../components/Section";
 import { ButtonText } from "../../components/ButtonText";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { api } from "../../services/api";
 
 export function Details() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [note, setNote] = useState({
+    title: "",
+    description: "",
+    links: [],
+    tags: [],
+  });
+
+  useEffect(() => {
+    async function fetchNote() {
+      try {
+        const response = await api.get(`/notes/${id}`);
+        if (response.status === 200) {
+          setNote(response.data);
+        }
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+        navigate("/");
+      }
+    }
+
+    fetchNote();
+  }, []);
+
+  async function handleDeleteNote() {
+    try {
+      const response = await api.delete(`/notes/${id}`);
+      console.log(response);
+      if (response.status === 200) {
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <Container>
       <Header />
 
       <main>
         <Content>
-          <ButtonText title="Delete Note" />
+          <ButtonText title="Delete Note" onClick={() => handleDeleteNote()} />
 
-          <h1>Title</h1>
+          <h1>{note.title}</h1>
 
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </p>
+          <p>{note.description}</p>
 
-          <Section title="Links úteis">
+          <Section title="Useful Links">
             <Links>
-              <li>
-                <a href="#">https://www.google.com.br</a>
-              </li>
-              <li>
-                <a href="#">https://www.linkedin.com/in/acraposo/</a>
-              </li>
+              {note.links.map((link) => {
+                return (
+                  <li>
+                    <a href="#">{link.url}</a>
+                  </li>
+                );
+              })}
             </Links>
           </Section>
 
-          <Section title="Marcadores">
-            <Tag title="express" />
-            <Tag title="node" />
+          <Section title="Tags">
+            {note.tags.map((tag) => {
+              return <Tag title={tag.name} />;
+            })}
           </Section>
 
-          <Button title="Back" />
+          <Button title="Back" onClick={() => navigate("/")} />
         </Content>
       </main>
     </Container>

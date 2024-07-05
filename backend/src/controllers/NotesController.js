@@ -37,7 +37,7 @@ class NotesController {
     return response.status(201).json();
   }
 
-  async show(request, response) {
+  async getNote(request, response) {
     const { id } = request.params;
 
     const note = await knex("notes").where({ id }).first();
