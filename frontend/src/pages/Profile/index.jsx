@@ -17,7 +17,10 @@ export function Profile() {
 
       <Form>
         <Avatar>
-          <img src="" alt="user's picture" />
+          <img
+            src="https://avatars.githubusercontent.com/u/7716103?v=4"
+            alt="user's picture"
+          />
           <label htmlFor="avatar">
             <FiCamera />
 

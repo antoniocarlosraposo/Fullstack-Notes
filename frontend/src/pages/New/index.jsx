@@ -18,18 +18,18 @@ export function New() {
         <Form>
           <header>
             <h1>Create Note</h1>
-            <Link to="/">back</Link>
+            <Link to="/">Back</Link>
           </header>
 
-          <Input placeholder="title" />
-          <Textarea placeholder="Observações" />
+          <Input placeholder="Title" />
+          <Textarea placeholder="Description" />
 
-          <Section title="Links úteis">
+          <Section title="Useful links">
             <NoteItem value="https://www.linkedin.com/in/acraposo/" />
             <NoteItem isNew placeholder="New link" />
           </Section>
 
-          <Section title="Marcadores">
+          <Section title="Tags">
             <div className="tags">
               <NoteItem value="react" />
               <NoteItem isNew placeholder="New tag" />

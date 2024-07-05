@@ -3,7 +3,7 @@ import { Container, Profile, Logout } from "./styles";
 import { useAuth } from "../../hooks/useAuth";
 
 export function Header() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   function handleSignOut() {
     signOut();
@@ -11,11 +11,14 @@ export function Header() {
   return (
     <Container>
       <Profile to="/profile">
-        <img src="https://github.com/rodrigorgtic.png" alt="User photo" />
+        <img
+          src="https://avatars.githubusercontent.com/u/7716103?v=4"
+          alt="User photo"
+        />
 
         <div>
           <span>Welcome</span>
-          <strong>Antonio Raposo</strong>
+          <strong>{user.name}</strong>
         </div>
       </Profile>
 
