@@ -13,8 +13,10 @@ import { useAuth } from "../../hooks/useAuth";
 export function New() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [links, setLinks] = useState(["https://www.linkedin.com/in/acraposo/"]);
+  const [links, setLinks] = useState([]);
+  const [link, setLink] = useState("");
   const [tags, setTags] = useState([]);
+  const [tag, setTag] = useState("");
 
   const { user } = useAuth();
 
@@ -22,6 +24,22 @@ export function New() {
     const updatedLinks = [...links];
     updatedLinks.splice(index, 1);
     setLinks(updatedLinks);
+  }
+
+  function handleAddLink(link) {
+    setLinks([...links, link]);
+    setLink("");
+  }
+
+  function handleAddTag(tag) {
+    setTags([...tags, tag]);
+    setTag("");
+  }
+
+  function handleDeleteTag(index) {
+    const updatedTags = [...links];
+    updatedTags.splice(index, 1);
+    setTags(updatedTags);
   }
 
   async function handleSave() {
@@ -73,13 +91,33 @@ export function New() {
                 />
               );
             })}
-            <NoteItem isNew placeholder="New link" />
+            <NoteItem
+              isNew
+              placeholder="New link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              onClick={() => handleAddLink(link)}
+            />
           </Section>
 
           <Section title="Tags">
             <div className="tags">
-              <NoteItem value="react" />
-              <NoteItem isNew placeholder="New tag" />
+              {tags.map((tag, index) => {
+                return (
+                  <NoteItem
+                    key={index}
+                    value={tag}
+                    onClick={() => handleDeleteTag(index)}
+                  />
+                );
+              })}
+              <NoteItem
+                isNew
+                placeholder="New tag"
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+                onClick={() => handleAddTag(tag)}
+              />
             </div>
           </Section>
 
