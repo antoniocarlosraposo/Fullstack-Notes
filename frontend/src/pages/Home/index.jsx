@@ -15,20 +15,42 @@ export function Home() {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [tags, setTags] = useState([]);
+  const [notesFilteredByTag, setNotesFilteredByTag] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState(null);
   const navigate = useNavigate();
 
   const handleFilterByTitle = (searchTerm) => {
-    if (searchTerm === "") return setFilteredNotes(notes);
+    let notesToFilter = notes;
 
-    const filtered = notes.filter((note) =>
+    if (selectedTag) {
+      notesToFilter = notes.filter((note) =>
+        note.tags.some((t) => t.id === selectedTag.id)
+      );
+    }
+
+    const filtered = notesToFilter.filter((note) =>
       note.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setFilteredNotes(filtered);
   };
+
+  function handleSelectTag(tag) {
+    if (tag.id === selectedTag?.id) {
+      setSelectedTag(null);
+      setFilteredNotes(notes);
+      return;
+    }
+
+    const filtered = notes.filter((note) => {
+      return note.tags.some((t) => t.id === tag.id);
+    });
+
+    setFilteredNotes(filtered);
+    setSelectedTag(tag);
+  }
 
   useEffect(() => {
     async function fetchNotes() {
@@ -57,16 +79,6 @@ export function Home() {
     fetchNotes();
     fetchTags();
   }, []);
-
-  function handleSelectTag(tag) {
-    if (tag.id === selectedTag?.id) {
-      setSelectedTag(null);
-      setFilteredNotes(notes);
-      return;
-    }
-
-    setSelectedTag(tag);
-  }
 
   return (
     <Container>
