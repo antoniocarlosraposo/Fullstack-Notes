@@ -11,8 +11,20 @@ import { api } from "../../services/api";
 import { useAuth } from "../../hooks/useAuth";
 
 export function Home() {
-  const [notes, setNotes] = useState([]);
   const { user } = useAuth();
+  const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleFilterByTitle = (searchTerm) => {
+    if (searchTerm === "") return setFilteredNotes(notes);
+
+    const filtered = notes.filter((note) =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredNotes(filtered);
+  };
 
   useEffect(() => {
     async function fetchNotes() {
@@ -20,6 +32,7 @@ export function Home() {
         const response = await api.get(`/notes/getNotes/${user.id}`);
         if (response.status === 200) {
           setNotes(response.data);
+          setFilteredNotes(response.data);
         }
       } catch (err) {
         console.log(err);
@@ -50,15 +63,21 @@ export function Home() {
       </Menu>
 
       <Search>
-        <Input placeholder="Search by title" />
+        <Input
+          placeholder="Search by title"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            handleFilterByTitle(e.target.value);
+          }}
+        />
       </Search>
 
       <Content>
         <Section title="My Notes">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <Note key={note.id} data={note} />
           ))}
-          {notes.map((note) => console.log(note))}
         </Section>
       </Content>
 
