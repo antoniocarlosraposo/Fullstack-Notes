@@ -14,8 +14,10 @@ import { useNavigate } from "react-router-dom";
 export function Home() {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
+  const [tags, setTags] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState(null);
   const navigate = useNavigate();
 
   const handleFilterByTitle = (searchTerm) => {
@@ -41,8 +43,30 @@ export function Home() {
       }
     }
 
+    async function fetchTags() {
+      try {
+        const response = await api.get(`/tags/${user.id}`);
+        if (response.status === 200) {
+          setTags(response.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
     fetchNotes();
+    fetchTags();
   }, []);
+
+  function handleSelectTag(tag) {
+    if (tag.id === selectedTag?.id) {
+      setSelectedTag(null);
+      setFilteredNotes(notes);
+      return;
+    }
+
+    setSelectedTag(tag);
+  }
 
   return (
     <Container>
@@ -53,15 +77,17 @@ export function Home() {
       <Header />
 
       <Menu>
-        <li>
-          <ButtonText title="Todos" $isactive />
-        </li>
-        <li>
-          <ButtonText title="React" />
-        </li>
-        <li>
-          <ButtonText title="Nodejs" />
-        </li>
+        {tags.map((tag) => {
+          return (
+            <li key={tag.id}>
+              <ButtonText
+                title={tag.name}
+                onClick={() => handleSelectTag(tag)}
+                isActive={selectedTag?.id === tag.id}
+              />
+            </li>
+          );
+        })}
       </Menu>
 
       <Search>
