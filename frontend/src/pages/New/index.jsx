@@ -43,7 +43,6 @@ export function New() {
   }
 
   async function handleSave() {
-    console.log(`/notes/${user.id}`);
     try {
       const response = await api.post(`/notes/${user.id}`, {
         title,

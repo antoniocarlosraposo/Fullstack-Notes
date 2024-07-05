@@ -95,6 +95,26 @@ class NotesController {
 
     return response.json(notesWhithTags);
   }
+
+  async getNotes(request, response) {
+    const { user_id } = request.params;
+
+    const notes = await knex("notes")
+      .where({ user_id })
+      .orderBy("created_at", "desc");
+    const notesWithTagsAndLinks = await Promise.all(
+      notes.map(async (note) => {
+        const tags = await knex("tags")
+          .where({ note_id: note.id })
+          .orderBy("name");
+        const links = await knex("links").where({ note_id: note.id });
+
+        return { ...note, tags, links };
+      })
+    );
+
+    return response.status(200).json(notesWithTagsAndLinks);
+  }
 }
 
 module.exports = NotesController;
