@@ -5,7 +5,7 @@ export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
   const [data, setData] = useState({
-    user: localStorage.getItem("@fullstacknotes:user") ?? undefined,
+    user: JSON.parse(localStorage.getItem("@fullstacknotes:user")) ?? undefined,
     token: localStorage.getItem("@fullstacknotes:token") ?? undefined,
   });
   const [loading, setLoading] = useState(true);

@@ -18,7 +18,9 @@ class NotesController {
       };
     });
 
-    await knex("links").insert(linksInsert);
+    if (linksInsert.length > 0) {
+      await knex("links").insert(linksInsert);
+    }
 
     const tagsInsert = tags.map((name) => {
       return {
@@ -28,9 +30,11 @@ class NotesController {
       };
     });
 
-    await knex("tags").insert(tagsInsert);
+    if (tagsInsert.length > 0) {
+      await knex("tags").insert(tagsInsert);
+    }
 
-    response.json();
+    return response.status(201).json();
   }
 
   async show(request, response) {
