@@ -15,7 +15,6 @@ export function Home() {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
   const [tags, setTags] = useState([]);
-  const [notesFilteredByTag, setNotesFilteredByTag] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState(null);

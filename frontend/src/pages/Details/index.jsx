@@ -8,6 +8,7 @@ import { ButtonText } from "../../components/ButtonText";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { api } from "../../services/api";
+import { toast } from "react-toastify";
 
 export function Details() {
   const { id } = useParams();
@@ -26,7 +27,6 @@ export function Details() {
         if (response.status === 200) {
           setNote(response.data);
         }
-        console.log(response.data);
       } catch (err) {
         console.log(err);
         navigate("/");
@@ -39,12 +39,12 @@ export function Details() {
   async function handleDeleteNote() {
     try {
       const response = await api.delete(`/notes/${id}`);
-      console.log(response);
       if (response.status === 200) {
+        toast.success("Note deleted successfully!");
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
+      toast.error("Error deleting note!");
     }
   }
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Textarea } from "../../components/Textarea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
@@ -9,6 +9,7 @@ import { Input } from "../../components/Input";
 import { Container, Form } from "./styles";
 import { api } from "../../services/api";
 import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 export function New() {
   const [title, setTitle] = useState("");
@@ -17,6 +18,7 @@ export function New() {
   const [link, setLink] = useState("");
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
@@ -43,6 +45,18 @@ export function New() {
   }
 
   async function handleSave() {
+    if (!title || !description) {
+      return toast.error("Title and description are required!");
+    }
+
+    if (tag !== "") {
+      return toast.error("Tag was not added, click on the button to add it!");
+    }
+
+    if (link !== "") {
+      return toast.error("Link was not added, click on the button to add it!");
+    }
+
     try {
       const response = await api.post(`/notes/${user.id}`, {
         title,
@@ -51,10 +65,12 @@ export function New() {
         tags,
       });
       if (response.status === 201) {
-        window.location.href = "/";
+        toast.success("Note created successfully!");
+
+        navigate(-1);
       }
     } catch (err) {
-      console.log(err);
+      toast.error("Error creating note!");
     }
   }
 

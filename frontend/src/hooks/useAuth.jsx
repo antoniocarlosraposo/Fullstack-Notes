@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext({});
 
@@ -27,6 +28,9 @@ function AuthProvider({ children }) {
   }, []);
 
   async function signIn({ email, password }) {
+    if (!email || !password)
+      return toast.error("Email and password are required!");
+
     try {
       const response = await api.post("/users/login", { email, password });
 
@@ -36,8 +40,9 @@ function AuthProvider({ children }) {
       localStorage.setItem("@fullstacknotes:user", JSON.stringify(user));
 
       setData({ token, user });
+      toast.success("Login successful!");
     } catch (error) {
-      console.log(error);
+      toast.error("Error logging in!");
     }
   }
 
@@ -46,6 +51,9 @@ function AuthProvider({ children }) {
     localStorage.removeItem("@fullstacknotes:user");
 
     setData({});
+    toast.success("Logout successful!");
+
+    window.location.href = "/";
   }
 
   return (
